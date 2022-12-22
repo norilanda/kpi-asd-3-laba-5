@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace laba5.Graph
+namespace laba5.GraphModel
 {
     public class Graph
     {

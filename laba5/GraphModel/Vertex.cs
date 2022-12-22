@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace laba5.Graph
+namespace laba5.GraphModel
 {
     public class Vertex
     {
