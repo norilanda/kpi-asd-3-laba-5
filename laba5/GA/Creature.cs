@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace laba5
+namespace laba5.GA
 {
-    public class GeneticAlgorithm
+    public class Creature
     {
 
     }
