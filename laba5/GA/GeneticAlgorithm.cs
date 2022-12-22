@@ -16,6 +16,7 @@ namespace laba5.GA
         {
             Creature.adjList = graph.adjList;
             v = graph.adjList.Length;
+            CreateInitialPopulation();
         }
         private void CreateInitialPopulation()
         {
@@ -25,6 +26,11 @@ namespace laba5.GA
             {
                 chromosome = new bool[v];
                 chromosome[i] = true;
+                if (i < v - 2)
+                {
+                    chromosome[i + 1] = true;
+                    chromosome[i + 2] = true;
+                }
                 initialPopulation[i] = new Creature(chromosome);
             }
         }

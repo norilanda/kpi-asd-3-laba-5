@@ -11,7 +11,7 @@ namespace laba5.GA
         public static List<int>[] adjList;
         private bool[] _chromosome;
         private int _F;
-        private List<int> maxClique;
+        private Dictionary<int, List<int>> maxClique;
         public int F
         { 
             get { return _F; }
@@ -20,12 +20,69 @@ namespace laba5.GA
         public Creature(bool[] chromosome) 
         {
             _chromosome = chromosome;
-            _F = 0;
+            ExtractMaxClique();
+            _F = maxClique.Count;
         }
         private void ExtractMaxClique()
         {
-            maxClique = new List<int>();
-            // finish!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            maxClique = new Dictionary<int, List<int>>();
+            // add vertices from chromosome to dictionary
+            for (int i=0;i< _chromosome.Length;i++)
+            {
+                if (_chromosome[i])
+                    maxClique[i] = new List<int>();
+            }
+            //connect vertices
+            foreach (int i in maxClique.Keys)
+            {
+                for (int j=0; j < adjList[i].Count; j++)
+                {
+                    int index = adjList[i][j];
+                    if (maxClique.ContainsKey(index) && !maxClique[i].Contains(index))
+                    {
+                        maxClique[index].Add(i);
+                        maxClique[i].Add(index);
+                    }     
+                }
+            }
+            Random rnd= new Random();
+            while (!IsClique())
+            {
+                List<int> candidatesForDeleting = new List<int>();
+                int minDegree = int.MaxValue;
+                //forming a candidatesForDeleting list
+                foreach (int i in maxClique.Keys)
+                {
+                    if (maxClique[i].Count < minDegree)
+                    {
+                        candidatesForDeleting.Clear();
+                        candidatesForDeleting.Add(i);
+                        minDegree = maxClique[i].Count;
+                    }
+                    else if (maxClique[i].Count == minDegree)
+                        candidatesForDeleting.Add(i);
+                }
+                int index = candidatesForDeleting[rnd.Next(candidatesForDeleting.Count)];//get vertex index to remove
+                for (int i=0; i < maxClique[index].Count; i++)
+                {
+                    int connectedVertex = maxClique[index][i];
+                    maxClique[connectedVertex].Remove(index);
+                }
+                maxClique.Remove(index);
+            }
+        }
+        private bool IsClique()
+        {
+            foreach (int i in maxClique.Keys)
+            {
+                foreach (int j in maxClique.Keys)
+                {
+                    if (i == j) continue;
+                    if (!maxClique[j].Contains(i))
+                        return false;
+                }
+            }
+            return true;
         }
     }
 }
