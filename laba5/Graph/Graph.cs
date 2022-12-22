@@ -5,26 +5,16 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace laba5
+namespace laba5.Graph
 {
-    public class Vertex
-    {
-        public int index;
-        public int edgeNumber;
-        public Vertex(int index, int edgeNumber)
-        {
-            this.index = index;
-            this.edgeNumber = edgeNumber;
-        }
-    }
     public class Graph
     {
         private int _V;
-        private List<int> [] _adjustmentList;
+        private List<int>[] _adjustmentList;
 
         public Graph(int v, int minVertexDegree, int maxVertexDegree)
         {
-            this._V = v;
+            _V = v;
             _adjustmentList = Generate(v, minVertexDegree, maxVertexDegree);
         }
         public Graph(int v, List<int>[] adjustmentList)
@@ -39,40 +29,40 @@ namespace laba5
             for (int i = 0; i < v; i++)
                 adjList[i] = new List<int>();
             List<Vertex> initial = new List<Vertex>(v);
-            List<Vertex> vertices = new List<Vertex> (v);
+            List<Vertex> vertices = new List<Vertex>(v);
             Random rnd = new Random();
             //decide the degree of each vertex
-            for (int i=0; i<v; i++)
+            for (int i = 0; i < v; i++)
             {
-                Vertex vertex = new Vertex(i, rnd.Next(minVertexDegree, maxVertexDegree+1));
+                Vertex vertex = new Vertex(i, rnd.Next(minVertexDegree, maxVertexDegree + 1));
                 vertices.Add(vertex);
                 initial.Add(vertex);
             }
-                
+
             int indexOutSet, indexInSet;
             //connect all vertices in graph
             indexInSet = 0;
             vertices.RemoveAt(0);
-            for (int i=0; i<v-1; i++)
+            for (int i = 0; i < v - 1; i++)
             {
                 indexOutSet = rnd.Next(0, vertices.Count);
 
                 AddEdge(adjList, indexInSet, vertices[indexOutSet].index, initial[indexInSet], vertices[indexOutSet]);
 
                 indexInSet = vertices[indexOutSet].index;
-                vertices.RemoveAt(indexOutSet);                
+                vertices.RemoveAt(indexOutSet);
 
             }
             // add missing edges
             int index;
-            for (int i = 0;i<v; i++)
+            for (int i = 0; i < v; i++)
             {
-                for (int j = 0; j<initial[i].edgeNumber; j++)
+                for (int j = 0; j < initial[i].edgeNumber; j++)
                 {
                     index = rnd.Next(0, v - 1);
                     if (initial[index].edgeNumber > 0 && index != i && !IsAlreadyInList(adjList, i, index))
                     {
-                        AddEdge(adjList, i, index, initial[i], initial[index]);                        
+                        AddEdge(adjList, i, index, initial[i], initial[index]);
                     }
                 }
             }
@@ -89,7 +79,7 @@ namespace laba5
         }
         private static bool IsAlreadyInList(List<int>[] adjList, int v, int vToConnect)
         {
-            for(int i=0; i < adjList[v].Count; i++)
+            for (int i = 0; i < adjList[v].Count; i++)
             {
                 if (adjList[v][i] == vToConnect) return true;
             }
@@ -98,7 +88,7 @@ namespace laba5
 
         public void Display()
         {
-            for (int i=0;i<_V;i++)
+            for (int i = 0; i < _V; i++)
             {
                 Console.Write(Convert.ToString(i).PadRight(3) + ":");
                 for (int j = 0; j < _adjustmentList[i].Count; j++)
