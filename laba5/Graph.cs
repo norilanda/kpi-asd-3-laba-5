@@ -27,6 +27,12 @@ namespace laba5
             this._V = v;
             _adjustmentList = Generate(v, minVertexDegree, maxVertexDegree);
         }
+        public Graph(int v, List<int>[] adjustmentList)
+        {
+            _V = v;
+            _adjustmentList = adjustmentList;
+        }
+
         public static List<int>[] Generate(int v, int minVertexDegree, int maxVertexDegree)
         {
             List<int>[] adjList = new List<int>[v];
@@ -70,6 +76,8 @@ namespace laba5
                     }
                 }
             }
+            for (int i = 0; i < v; i++)
+                adjList[i].Sort();
             return adjList;
         }
         private static void AddEdge(List<int>[] adjList, int v1, int v2, Vertex vertex1, Vertex vertex2)
