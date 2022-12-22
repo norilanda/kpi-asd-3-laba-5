@@ -9,3 +9,4 @@ Console.WriteLine();
 graph2.Display();
 
 GeneticAlgorithm ga = new GeneticAlgorithm(graph2);
+ga.Start();
