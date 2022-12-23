@@ -17,9 +17,11 @@ namespace laba5.GA
             get { return _F; }
             set { _F = value; }
         }
+        public bool[] Chromosome => _chromosome;
         public Creature(bool[] chromosome) 
         {
-            _chromosome = chromosome;
+            _chromosome = new bool[chromosome.Length];
+            Array.Copy(chromosome, _chromosome,chromosome.Length);
             ExtractMaxClique();
             _F = maxClique.Count;
         }

@@ -9,23 +9,47 @@ namespace laba5.GA
 {
     public class GeneticAlgorithm
     {
-        public enum SelectionMethod
+        //public enum SelectionMethod
+        //{
+        //    BestAndRandom,
+        //    Tournament,
+        //    Proportionate
+        //}
+        public enum CrossoverMethod
         {
-            BestAndRandom,
-            Tournament,
-            Proportionate
+            TwoPoints,
+            FivePoints,
+            Dynamic
+        }
+        public enum MutationMethod
+        {
+            ChangeToOpposite,
+            Exchange
         }
         int v;
         private SortedList<int, Creature> _currPopulation;
         private Creature bestCreature;
-        SelectionMethod selectMethod;
+        CrossoverMethod crossMethod;
+        MutationMethod mutMethod;
+        int iterations;
+        int currPointNumber;//for dynamic crossover
+        //SelectionMethod selectMethod;
 
-        public GeneticAlgorithm(Graph graph)
+        public GeneticAlgorithm(Graph graph, int crossMethod, int mutMethod)
         {
             Creature.adjList = graph.adjList;
             v = graph.adjList.Length;
             CreateInitialPopulation();
             bestCreature = _currPopulation.Last().Value;
+            this.crossMethod = (CrossoverMethod)crossMethod;
+            this.mutMethod = (MutationMethod)mutMethod;
+            iterations = 0;
+            if (v > 50)
+                currPointNumber = 10;
+            else if (v > 18)
+                currPointNumber = 5;
+            else
+                currPointNumber = 3;
         }
         private void CreateInitialPopulation()
         {
@@ -47,11 +71,12 @@ namespace laba5.GA
                 Creature parent1, parent2;
                 Creature child1, child2;
                 Selection(out parent1, out parent2);
-                //Crossover(parent1, parent2, out child1, out child2);
+                Crossover(parent1, parent2, out child1, out child2);
                 //Mutation(child1);
                 //Mutation(child2);
                 //LocalImprovment(child1);
                 //LocalImprovment(child2);
+                iterations++;
             }
         }
         private void Selection(out Creature parent1, out Creature parent2)
@@ -62,6 +87,68 @@ namespace laba5.GA
             {
                 parent2 = _currPopulation.ElementAt(rnd.Next(0, _currPopulation.Count)).Value;
             } while (parent1 == parent2);
+        }
+        private void Crossover(Creature parent1, Creature parent2, out Creature child1, out Creature child2)
+        {
+            switch (crossMethod)
+            {
+                case CrossoverMethod.TwoPoints:
+                    C_kPoints(parent1, parent2, out child1, out child2, 2);
+                    break;
+                case CrossoverMethod.FivePoints:
+                    C_kPoints(parent1, parent2, out child1, out child2, 5);
+                    break;
+                case CrossoverMethod.Dynamic:
+                    C_Dynamic(parent1, parent2, out child1, out child2);
+                    break;
+                default:
+                    C_Dynamic(parent1, parent2, out child1, out child2);
+                    break;
+            }
+        }
+        private void C_kPoints(Creature parent1, Creature parent2, out Creature child1, out Creature child2, int pointNumber)
+        {
+            bool[] childChromosome1 = new bool[v];
+            bool[] childChromosome2 = new bool[v];
+            List<int> indices = GenerateDifferentNumbers(0, v, pointNumber);
+            int start = 0, genNum;
+            int i = 0;
+            do
+            {
+                genNum = indices[i] - start + 1;
+                Array.Copy(parent1.Chromosome, start, childChromosome1, start, genNum);
+                Array.Copy(parent2.Chromosome, start, childChromosome2, start, genNum);
+                start = indices[i];
+                i++;
+            }
+            while (i < pointNumber);
+            //copy the rest
+            genNum = v - start;
+            Array.Copy(parent1.Chromosome, start, childChromosome1, start, genNum);
+            Array.Copy(parent2.Chromosome, start, childChromosome2, start, genNum);
+
+            child1 = new Creature(childChromosome1);
+            child2 = new Creature(childChromosome2);
+        }
+        private void C_Dynamic(Creature parent1, Creature parent2, out Creature child1, out Creature child2)
+        {
+            C_kPoints(parent1, parent2, out child1, out child2, currPointNumber);
+            if (currPointNumber>2 && iterations%3 == 0)
+                currPointNumber--;
+        }
+        private static List<int> GenerateDifferentNumbers(int start,int end, int number)
+        {
+            List<int> numbers = new List<int>();
+            Random rnd = new Random();
+            int index;
+            while (numbers.Count < number)
+            {
+                index = rnd.Next();
+                if (!numbers.Contains(index))
+                    numbers.Add(index);
+            }
+            numbers.Sort();
+            return numbers;
         }
     }
 }
