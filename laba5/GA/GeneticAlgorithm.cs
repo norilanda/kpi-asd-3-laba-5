@@ -36,6 +36,8 @@ namespace laba5.GA
 
         private double mutationPossibility;
 
+        public Creature BestCreature => bestCreature;
+
         public GeneticAlgorithm(Graph graph, int crossMethod, int mutMethod, double mutationPossibl, int imprMethod)
         {
             Creature.adjList = graph.adjList;

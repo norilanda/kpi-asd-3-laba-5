@@ -125,6 +125,7 @@ namespace laba5.GA
                 Console.Write(Convert.ToString(key).PadLeft(3) + ":");
                 for (int i = 0; i < maxClique[key].Count; i++)
                     Console.Write(" "+maxClique[key][i]);
+                Console.WriteLine();
             }
         }
     }
