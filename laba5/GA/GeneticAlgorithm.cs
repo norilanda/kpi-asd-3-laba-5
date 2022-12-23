@@ -29,13 +29,14 @@ namespace laba5.GA
         int v;
         private SortedList<int, Creature> _currPopulation;
         private Creature bestCreature;
-        CrossoverMethod crossMethod;
-        MutationMethod mutMethod;
-        int iterations;
-        int currPointNumber;//for dynamic crossover
+        private CrossoverMethod crossMethod;
+        private MutationMethod mutMethod;
+        private int iterations;
+        private int currPointNumber;//for dynamic crossover
         //SelectionMethod selectMethod;
+        private double mutationPossibility;
 
-        public GeneticAlgorithm(Graph graph, int crossMethod, int mutMethod)
+        public GeneticAlgorithm(Graph graph, int crossMethod, int mutMethod, double mutationPossibl)
         {
             Creature.adjList = graph.adjList;
             v = graph.adjList.Length;
@@ -50,6 +51,7 @@ namespace laba5.GA
                 currPointNumber = 5;
             else
                 currPointNumber = 3;
+            mutationPossibility = mutationPossibl;
         }
         private void CreateInitialPopulation()
         {
@@ -72,8 +74,8 @@ namespace laba5.GA
                 Creature child1, child2;
                 Selection(out parent1, out parent2);
                 Crossover(parent1, parent2, out child1, out child2);
-                //Mutation(child1);
-                //Mutation(child2);
+                Mutation(ref child1);
+                Mutation(ref child2);
                 //LocalImprovment(child1);
                 //LocalImprovment(child2);
                 iterations++;
@@ -149,6 +151,45 @@ namespace laba5.GA
             }
             numbers.Sort();
             return numbers;
+        }
+        private void Mutation(ref Creature child)
+        {
+            switch (mutMethod)
+            {
+                case MutationMethod.ChangeToOpposite:
+                    M_ChangeToOpposite(ref child);
+                    break;
+                case MutationMethod.Exchange:
+                    M_Exchange(ref child);
+                    break;
+                default: throw new NotImplementedException();
+            }
+        }
+        private void M_ChangeToOpposite(ref Creature child)
+        {
+            Random rnd = new Random();
+            if (rnd.NextDouble() <= mutationPossibility)
+            {
+                int gen;
+                gen = rnd.Next(0, v);
+                child.Chromosome[gen] = !child.Chromosome[gen];
+            }
+        }
+        private void M_Exchange(ref Creature child)
+        {
+            Random rnd = new Random();
+            if (rnd.NextDouble() <= mutationPossibility)
+            {
+                int gen1, gen2;
+                gen1 = rnd.Next(0, v);
+                do
+                {
+                    gen2 = rnd.Next(0, v);
+                } while (gen1 == gen2);
+                bool temp = child.Chromosome[gen1];
+                child.Chromosome[gen1] = child.Chromosome[gen2];
+                child.Chromosome[gen2] = temp;            
+            }
         }
     }
 }

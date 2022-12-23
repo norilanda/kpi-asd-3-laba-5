@@ -8,8 +8,9 @@ Graph graph2 = new Graph(5, new List<int>[] { new List<int>{1, 2 }, new List<int
 Console.WriteLine();
 //graph2.Display();
 
-int crossMethod = 2; //0-TwoPoints, 1-FivePoints, 2-Dynamic
-int mutMethod = 0; //0-ChangeToOpposite, 1-Exchange
+int crossMethod = 0; //0-TwoPoints, 1-FivePoints, 2-Dynamic
+int mutMethod = 1; //0-ChangeToOpposite, 1-Exchange
+double mutationPossibility = 0.1;
 
-GeneticAlgorithm ga = new GeneticAlgorithm(graph2, crossMethod, mutMethod);
+GeneticAlgorithm ga = new GeneticAlgorithm(graph2, crossMethod, mutMethod, mutationPossibility);
 ga.Start();
