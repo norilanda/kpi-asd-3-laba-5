@@ -115,7 +115,7 @@ namespace laba5.GA
             int i = 0;
             do
             {
-                genNum = indices[i] - start + 1;
+                genNum = indices[i] - start;
                 Array.Copy(parent1.Chromosome, start, childChromosome1, start, genNum);
                 Array.Copy(parent2.Chromosome, start, childChromosome2, start, genNum);
                 start = indices[i];
@@ -143,7 +143,7 @@ namespace laba5.GA
             int index;
             while (numbers.Count < number)
             {
-                index = rnd.Next();
+                index = rnd.Next(start, end);
                 if (!numbers.Contains(index))
                     numbers.Add(index);
             }
