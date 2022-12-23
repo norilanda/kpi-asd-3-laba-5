@@ -44,7 +44,7 @@ namespace laba5.GA
                 for (int j=0; j < adjList[i].Count; j++)
                 {
                     int index = adjList[i][j];
-                    if (maxClique.ContainsKey(index) && !maxClique[i].Contains(index))
+                    if (maxClique.ContainsKey(index) && !maxClique[i].Contains(index) && i != index)
                     {
                         maxClique[index].Add(i);
                         maxClique[i].Add(index);

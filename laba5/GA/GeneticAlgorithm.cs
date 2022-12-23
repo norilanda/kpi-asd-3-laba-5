@@ -65,6 +65,7 @@ namespace laba5.GA
                 chromosome = new bool[v];
                 chromosome[i] = true;
                 Creature creature = new Creature(chromosome);
+                creature.ExtractCliqueAndSetF();
                 _currPopulation.Add(creature.F, creature);
             }
         }
@@ -79,8 +80,10 @@ namespace laba5.GA
                 Crossover(parent1, parent2, out child1, out child2);
                 Mutation(ref child1);
                 Mutation(ref child2);
-                LocalImprovement(child1);
-                LocalImprovement(child2);
+                child1.ExtractCliqueAndSetF();
+                child2.ExtractCliqueAndSetF() ;
+                //LocalImprovement(child1);
+                //LocalImprovement(child2);
                 AddChildToPopulation(child1);
                 AddChildToPopulation(child2);
                                 
@@ -101,7 +104,7 @@ namespace laba5.GA
             switch (crossMethod)
             {
                 case CrossoverMethod.TwoPoints:
-                    C_kPoints(parent1, parent2, out child1, out child2, 2);
+                    C_kPoints(parent1, parent2, out child1, out child2, 1);/////!!!!!!!!!!!!!
                     break;
                 case CrossoverMethod.FivePoints:
                     C_kPoints(parent1, parent2, out child1, out child2, 5);
@@ -124,16 +127,32 @@ namespace laba5.GA
             do
             {
                 genNum = indices[i] - start;
-                Array.Copy(parent1.Chromosome, start, childChromosome1, start, genNum);
-                Array.Copy(parent2.Chromosome, start, childChromosome2, start, genNum);
+                if (i%2 == 0)
+                {
+                    Array.Copy(parent1.Chromosome, start, childChromosome1, start, genNum);
+                    Array.Copy(parent2.Chromosome, start, childChromosome2, start, genNum);
+                }
+                else
+                {
+                    Array.Copy(parent2.Chromosome, start, childChromosome1, start, genNum);
+                    Array.Copy(parent1.Chromosome, start, childChromosome2, start, genNum);
+                }
                 start = indices[i];
                 i++;
             }
             while (i < pointNumber);
             //copy the rest
             genNum = v - start;
-            Array.Copy(parent1.Chromosome, start, childChromosome1, start, genNum);
-            Array.Copy(parent2.Chromosome, start, childChromosome2, start, genNum);
+            if (i % 2 == 0)
+            {
+                Array.Copy(parent1.Chromosome, start, childChromosome1, start, genNum);
+                Array.Copy(parent2.Chromosome, start, childChromosome2, start, genNum);
+            }
+            else
+            {
+                Array.Copy(parent2.Chromosome, start, childChromosome1, start, genNum);
+                Array.Copy(parent1.Chromosome, start, childChromosome2, start, genNum);
+            }
 
             child1 = new Creature(childChromosome1);
             child2 = new Creature(childChromosome2);
@@ -199,7 +218,6 @@ namespace laba5.GA
         }
         private void LocalImprovement(Creature child)
         {
-            child.ExtractCliqueAndSetF();
             switch (imprMethod)
             {
                 case LocalImprMethod.AddVerticesToCliqueStraight:

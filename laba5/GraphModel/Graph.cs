@@ -23,6 +23,12 @@ namespace laba5.GraphModel
             _V = v;
             _adjustmentList = adjustmentList;
         }
+        public Graph(string filePath)
+        {
+            Graph g = ReadFromFile(filePath);
+            this._V = g._V;
+            this._adjustmentList = g._adjustmentList;
+        }
 
         public static List<int>[] Generate(int v, int minVertexDegree, int maxVertexDegree)
         {
@@ -96,6 +102,35 @@ namespace laba5.GraphModel
                     Console.Write(" " + _adjustmentList[i][j]);
                 Console.WriteLine();
             }
+        }
+        public void WriteToFile(string path)
+        {
+            string[] lines = new string[_V];
+            for (int i=0; i< _V;i++)
+            {
+                for (int j = 0; j < _adjustmentList[i].Count; j++)
+                    lines[i] += Convert.ToString(_adjustmentList[i][j] + " ");
+                lines[i].Trim();
+            }
+            File.WriteAllLines(path, lines);
+        }
+        public static Graph ReadFromFile(string path)
+        {            
+            string[]lines = File.ReadAllLines(path);
+            int v = lines.Length;
+            List<int>[] adjList = new List<int>[v];
+            for (int i = 0; i < v; i++)
+                adjList[i] = new List<int>();
+            for (int i=0; i< v; i++)
+            {
+                string[] vertices = lines[i].Split();
+                for (int j=0; j< vertices.Length; j++)
+                {
+                    if (vertices[j].Length > 0)
+                        adjList[i].Add(Convert.ToInt32(vertices[j]));
+                }
+            }
+            return new Graph(v, adjList);
         }
     }
 }
