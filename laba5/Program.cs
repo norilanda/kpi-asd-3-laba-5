@@ -10,7 +10,8 @@ Console.WriteLine();
 
 int crossMethod = 0; //0-TwoPoints, 1-FivePoints, 2-Dynamic
 int mutMethod = 1; //0-ChangeToOpposite, 1-Exchange
+int imprMethod = 1; //0-AddVerticesToCliqueStraight, 1-AddVerticesToCliqueRandom
 double mutationPossibility = 0.1;
 
-GeneticAlgorithm ga = new GeneticAlgorithm(graph2, crossMethod, mutMethod, mutationPossibility);
+GeneticAlgorithm ga = new GeneticAlgorithm(graph2, crossMethod, mutMethod, mutationPossibility, imprMethod);
 ga.Start();

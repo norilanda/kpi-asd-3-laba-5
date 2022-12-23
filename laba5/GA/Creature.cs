@@ -22,6 +22,9 @@ namespace laba5.GA
         {
             _chromosome = new bool[chromosome.Length];
             Array.Copy(chromosome, _chromosome,chromosome.Length);
+        }
+        public void ExtractCliqueAndSetF()
+        {
             ExtractMaxClique();
             _F = maxClique.Count;
         }
@@ -85,6 +88,34 @@ namespace laba5.GA
                 }
             }
             return true;
+        }
+        public void ImproveClique(int start = 0, int number = -1)
+        {
+            if (number == -1)
+                number = _chromosome.Length;
+            for(int i=start;i < number;i++)
+            {
+                if (!_chromosome[i])
+                {
+                    bool sholdAdd = true;
+                    foreach (int key in maxClique.Keys)
+                    {
+                        if (!Creature.adjList[i].Contains(key))
+                        {
+                            sholdAdd= false;
+                            break;
+                        }
+                    }
+                    if (sholdAdd)
+                    {
+                        foreach (int key in maxClique.Keys)
+                            maxClique[key].Add(i);
+                        List<int> adjListForI = new List<int>(maxClique.Keys);
+                        maxClique[i] = adjListForI;
+                        _chromosome[i] = true;
+                    }
+                }
+            }
         }
     }
 }

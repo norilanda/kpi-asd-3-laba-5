@@ -26,17 +26,23 @@ namespace laba5.GA
             ChangeToOpposite,
             Exchange
         }
+        public enum LocalImprMethod
+        {
+            AddVerticesToCliqueStraight,
+            AddVerticesToCliqueRandom
+        }
         int v;
         private SortedList<int, Creature> _currPopulation;
         private Creature bestCreature;
         private CrossoverMethod crossMethod;
         private MutationMethod mutMethod;
+        private LocalImprMethod imprMethod;
         private int iterations;
         private int currPointNumber;//for dynamic crossover
         //SelectionMethod selectMethod;
         private double mutationPossibility;
 
-        public GeneticAlgorithm(Graph graph, int crossMethod, int mutMethod, double mutationPossibl)
+        public GeneticAlgorithm(Graph graph, int crossMethod, int mutMethod, double mutationPossibl, int imprMethod)
         {
             Creature.adjList = graph.adjList;
             v = graph.adjList.Length;
@@ -44,6 +50,7 @@ namespace laba5.GA
             bestCreature = _currPopulation.Last().Value;
             this.crossMethod = (CrossoverMethod)crossMethod;
             this.mutMethod = (MutationMethod)mutMethod;
+            this.imprMethod = (LocalImprMethod)imprMethod;
             iterations = 0;
             if (v > 50)
                 currPointNumber = 10;
@@ -76,8 +83,8 @@ namespace laba5.GA
                 Crossover(parent1, parent2, out child1, out child2);
                 Mutation(ref child1);
                 Mutation(ref child2);
-                //LocalImprovment(child1);
-                //LocalImprovment(child2);
+                LocalImprovement(child1);
+                LocalImprovement(child2);
                 iterations++;
             }
         }
@@ -157,15 +164,15 @@ namespace laba5.GA
             switch (mutMethod)
             {
                 case MutationMethod.ChangeToOpposite:
-                    M_ChangeToOpposite(ref child);
+                    M_ChangeToOpposite(child);
                     break;
                 case MutationMethod.Exchange:
-                    M_Exchange(ref child);
+                    M_Exchange(child);
                     break;
                 default: throw new NotImplementedException();
             }
         }
-        private void M_ChangeToOpposite(ref Creature child)
+        private void M_ChangeToOpposite(Creature child)
         {
             Random rnd = new Random();
             if (rnd.NextDouble() <= mutationPossibility)
@@ -175,7 +182,7 @@ namespace laba5.GA
                 child.Chromosome[gen] = !child.Chromosome[gen];
             }
         }
-        private void M_Exchange(ref Creature child)
+        private void M_Exchange(Creature child)
         {
             Random rnd = new Random();
             if (rnd.NextDouble() <= mutationPossibility)
@@ -190,6 +197,29 @@ namespace laba5.GA
                 child.Chromosome[gen1] = child.Chromosome[gen2];
                 child.Chromosome[gen2] = temp;            
             }
+        }
+        private void LocalImprovement(Creature child)
+        {
+            child.ExtractCliqueAndSetF();
+            switch (imprMethod)
+            {
+                case LocalImprMethod.AddVerticesToCliqueStraight:
+                    LI_Straight(child); break;
+                case LocalImprMethod.AddVerticesToCliqueRandom:
+                    LI_Random(child); break;
+                default: break;
+            }
+        }
+        private void LI_Straight(Creature child)
+        {
+            child.ImproveClique();
+        }
+        private void LI_Random(Creature child)
+        {
+            Random rnd = new Random();
+            int number = rnd.Next(0, v);            
+            child.ImproveClique(number, v);
+            child.ImproveClique(0, number + 1);
         }
     }
 }
