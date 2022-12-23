@@ -9,12 +9,6 @@ namespace laba5.GA
 {
     public class GeneticAlgorithm
     {
-        //public enum SelectionMethod
-        //{
-        //    BestAndRandom,
-        //    Tournament,
-        //    Proportionate
-        //}
         public enum CrossoverMethod
         {
             TwoPoints,
@@ -39,7 +33,7 @@ namespace laba5.GA
         private LocalImprMethod imprMethod;
         private int iterations;
         private int currPointNumber;//for dynamic crossover
-        //SelectionMethod selectMethod;
+
         private double mutationPossibility;
 
         public GeneticAlgorithm(Graph graph, int crossMethod, int mutMethod, double mutationPossibl, int imprMethod)
@@ -85,6 +79,9 @@ namespace laba5.GA
                 Mutation(ref child2);
                 LocalImprovement(child1);
                 LocalImprovement(child2);
+                AddChildToPopulation(child1);
+                AddChildToPopulation(child2);
+                                
                 iterations++;
             }
         }
@@ -220,6 +217,16 @@ namespace laba5.GA
             int number = rnd.Next(0, v);            
             child.ImproveClique(number, v);
             child.ImproveClique(0, number + 1);
+        }
+        private void AddChildToPopulation(Creature child)   //add child and remove the worst
+        {            
+            if (bestCreature.F < child.F)
+                bestCreature = child;
+            if (child.F >= _currPopulation.ElementAt(0).Value.F)
+            {
+                _currPopulation.Add(child.F, child);
+                _currPopulation.RemoveAt(0);
+            }
         }
     }
 }
