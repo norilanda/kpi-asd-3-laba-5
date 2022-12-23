@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -115,6 +116,15 @@ namespace laba5.GA
                         _chromosome[i] = true;
                     }
                 }
+            }
+        }
+        public void DisplayMaxClique()
+        {
+            foreach (int key in maxClique.Keys)
+            {
+                Console.Write(Convert.ToString(key).PadLeft(3) + ":");
+                for (int i = 0; i < maxClique[key].Count; i++)
+                    Console.Write(" "+maxClique[key][i]);
             }
         }
     }
