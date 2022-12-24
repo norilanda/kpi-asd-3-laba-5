@@ -12,6 +12,7 @@ namespace laba5.GraphModel
         private int _V;
         private List<int>[] _adjustmentList;
         public List<int>[] adjList => _adjustmentList;
+        public int V => _V;
 
         public Graph(int v, int minVertexDegree, int maxVertexDegree)
         {

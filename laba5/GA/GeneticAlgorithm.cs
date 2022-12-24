@@ -42,7 +42,9 @@ namespace laba5.GA
 
         private double mutationPossibility;
         private int terminationNumber;
+        private bool hasAClique;
 
+        public bool HasAClique => hasAClique;
         public Creature BestCreature => bestCreature;
 
         public GeneticAlgorithm(Graph graph, int crossMethod, int mutMethod, double mutationPossibl, int imprMethod, int termCondition, int terminationNumber)
@@ -78,13 +80,13 @@ namespace laba5.GA
                 _currPopulation.Add(creature.F, creature);
             }
         }
-        public void Start()
+        public void Start(int k)
         {
-            //int tempItNumber = 100;
+            hasAClique = false;
             int lastBestF;            
 
             int currIterationNumberOrStagnancy = 0;//iteration number or stagnancy
-            while (currIterationNumberOrStagnancy < terminationNumber)
+            while (!hasAClique && currIterationNumberOrStagnancy < terminationNumber)
             {
                 lastBestF = bestCreature.F;//for stagnancy condition
 
@@ -107,6 +109,8 @@ namespace laba5.GA
                         currIterationNumberOrStagnancy = -1;
                 }                
                 currIterationNumberOrStagnancy++;
+                if (bestCreature.F >= k)
+                    hasAClique = true;
 
                 iterations++;
             }
