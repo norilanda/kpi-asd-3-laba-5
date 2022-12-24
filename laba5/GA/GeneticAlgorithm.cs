@@ -105,9 +105,8 @@ namespace laba5.GA
                 {
                     if (lastBestF != bestCreature.F)
                         currIterationNumberOrStagnancy = -1;
-                }
-                else
-                    currIterationNumberOrStagnancy++;
+                }                
+                currIterationNumberOrStagnancy++;
 
                 iterations++;
             }
