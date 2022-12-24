@@ -28,7 +28,8 @@ namespace laba5.GA
         public enum TerminationCondition
         {
             Iterations,
-            Stagnancy
+            Stagnancy, 
+            FullGraph
         }
         int v;
         private SortedList<int, Creature> _currPopulation;
@@ -46,6 +47,7 @@ namespace laba5.GA
 
         public bool HasAClique => hasAClique;
         public Creature BestCreature => bestCreature;
+        public int Iterations => iterations;
 
         public GeneticAlgorithm(Graph graph, int crossMethod, int mutMethod, double mutationPossibl, int imprMethod, int termCondition, int terminationNumber)
         {
@@ -82,6 +84,7 @@ namespace laba5.GA
         }
         public void Start(int k)
         {
+            iterations = 0;
             hasAClique = false;
             int lastBestF;            
 
@@ -107,8 +110,16 @@ namespace laba5.GA
                 {
                     if (lastBestF != bestCreature.F)
                         currIterationNumberOrStagnancy = -1;
-                }                
-                currIterationNumberOrStagnancy++;
+                    currIterationNumberOrStagnancy++;
+                }         
+                else if(terminationCondition== TerminationCondition.Iterations)
+                    currIterationNumberOrStagnancy++;
+                else
+                {
+                    if (child1.IsCompleteGraph() || child2.IsCompleteGraph())
+                        currIterationNumberOrStagnancy = terminationNumber;
+                }
+
                 if (bestCreature.F >= k)
                     hasAClique = true;
 

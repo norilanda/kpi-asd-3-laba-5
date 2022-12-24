@@ -2,8 +2,8 @@
 using laba5.GraphModel;
 
 string path = "graph.txt";
-Graph graph1 = new Graph(20, 2, 15);
-//graph1.WriteToFile(path);
+Graph graph1 = new Graph(300, 2, 30);
+graph1.WriteToFile(path);
 
 Graph graph = new Graph(path);
 if (graph.V < 30)
@@ -13,10 +13,10 @@ Console.WriteLine();
 int crossMethod = 0; //0-TwoPoints, 1-FivePoints, 2-Dynamic
 int mutMethod = 1; //0-ChangeToOpposite, 1-Exchange
 int imprMethod = 1; //0-AddVerticesToCliqueStraight, 1-AddVerticesToCliqueRandom
-int terminationCondition = 1; //0-number of iterations, 1-stagnancy
-int terminationNumber = 50;
+int terminationCondition = 1; //0-number of iterations, 1-stagnancy, 2-fullGraph
+int terminationNumber = 1000;
 double mutationPossibility = 0.1;
-int k = 5;
+int k = 4;
 
 GeneticAlgorithm ga = new GeneticAlgorithm(graph, crossMethod, mutMethod, mutationPossibility, imprMethod, terminationCondition, terminationNumber);
 ga.Start(k);
@@ -25,4 +25,7 @@ if (ga.HasAClique)
     Console.WriteLine("Graph CONTAINS clique with " + k + " vertices");
 else
     Console.WriteLine("The maximum clique has less than " + k + " vertices. Graph DOESN'T contain clique with " + k + " vertices");
+Console.WriteLine("Maximum clique: ");
 bestCreature.DisplayMaxClique();
+
+Console.WriteLine("Number of iterations that has been made: " + ga.Iterations);

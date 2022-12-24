@@ -128,5 +128,14 @@ namespace laba5.GA
                 Console.WriteLine();
             }
         }
+        public bool IsCompleteGraph()
+        {
+            for (int i=0; i<_chromosome.Length; i++)
+            {
+                if (!_chromosome[i])
+                    return false;
+            }
+            return true;
+        }
     }
 }
