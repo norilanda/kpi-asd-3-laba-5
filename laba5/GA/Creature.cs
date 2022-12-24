@@ -109,14 +109,49 @@ namespace laba5.GA
                     }
                     if (sholdAdd)
                     {
-                        foreach (int key in maxClique.Keys)
-                            maxClique[key].Add(i);
-                        List<int> adjListForI = new List<int>(maxClique.Keys);
-                        maxClique[i] = adjListForI;
-                        _chromosome[i] = true;
+                        AddVertex(i);
                     }
                 }
             }
+        }
+        private void AddVertex(int i)
+        {
+            foreach (int key in maxClique.Keys)
+                maxClique[key].Add(i);
+            List<int> adjListForI = new List<int>(maxClique.Keys);
+            maxClique[i] = adjListForI;
+            _chromosome[i] = true;
+            _F++;
+        }
+        public void AddVerticesFromAdjList()
+        {
+            //create candidates to add to clique as vertices that are common for all vertices in the click but are not added yet
+            if (maxClique.Count > 1)
+            {
+                //start with first vertex
+                int firstVertexKey = maxClique.Keys.First();
+                List<int> commonVerticesList = new List<int>();
+                for (int i = 0; i < Creature.adjList[firstVertexKey].Count; i++)
+                {
+                    if (!_chromosome[Creature.adjList[firstVertexKey][i]])
+                        commonVerticesList.Add(Creature.adjList[firstVertexKey][i]);
+                }
+                foreach (int key in maxClique.Keys)
+                {
+                    for (int j = 0; j < commonVerticesList.Count; j++)
+                    {
+                        if (!Creature.adjList[key].Contains(commonVerticesList[j]))
+                            commonVerticesList.Remove(commonVerticesList[j]);
+                    }
+                    if (commonVerticesList.Count == 0) break;
+                }
+                if (commonVerticesList.Count > 0)
+                {
+                    AddVertex(commonVerticesList[0]);
+                }
+            }
+            else
+                ImproveClique();
         }
         public void DisplayMaxClique()
         {

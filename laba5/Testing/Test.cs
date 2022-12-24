@@ -24,7 +24,7 @@ namespace laba5.Testing
         {
             int crossMethod = 0; //0-TwoPoints, 1-FivePoints, 2-Dynamic
             int mutMethod = 1; //0-ChangeToOpposite, 1-Exchange
-            int imprMethod = 1; //0-AddVerticesToCliqueStraight, 1-AddVerticesToCliqueRandom
+            int imprMethod = 1; //0-AddVerticesToCliqueStraight, 1-AddVerticesToCliqueRandom, 2-AddVerticesFromAdjList
             int terminationCondition = 1; //0-number of iterations, 1-stagnancy, 2-fullGraph
             int terminationNumber = 1000;
             double mutationPossibility = 0.1;

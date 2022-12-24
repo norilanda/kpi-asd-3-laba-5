@@ -5,18 +5,19 @@ string path = "graph.txt";
 Graph graph1 = new Graph(300, 2, 30);
 graph1.WriteToFile(path);
 
-Graph graph = new Graph(path);
+string pathA = "graphB.txt";
+Graph graph = new Graph(pathA);
 if (graph.V < 30)
     graph.Display();
 Console.WriteLine();
 
-int crossMethod = 0; //0-TwoPoints, 1-FivePoints, 2-Dynamic
+int crossMethod = 2; //0-TwoPoints, 1-FivePoints, 2-Dynamic
 int mutMethod = 1; //0-ChangeToOpposite, 1-Exchange
-int imprMethod = 1; //0-AddVerticesToCliqueStraight, 1-AddVerticesToCliqueRandom
+int imprMethod = 2; //0-AddVerticesToCliqueStraight, 1-AddVerticesToCliqueRandom, 2-AddVerticesFromAdjList
 int terminationCondition = 1; //0-number of iterations, 1-stagnancy, 2-fullGraph
 int terminationNumber = 1000;
 double mutationPossibility = 0.1;
-int k = 4;
+int k = 6;
 
 GeneticAlgorithm ga = new GeneticAlgorithm(graph, crossMethod, mutMethod, mutationPossibility, imprMethod, terminationCondition, terminationNumber);
 ga.Start(k);

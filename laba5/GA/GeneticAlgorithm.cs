@@ -23,7 +23,8 @@ namespace laba5.GA
         public enum LocalImprMethod
         {
             AddVerticesToCliqueStraight,
-            AddVerticesToCliqueRandom
+            AddVerticesToCliqueRandom,
+            AddVerticesFromAdjList
         }
         public enum TerminationCondition
         {
@@ -77,6 +78,8 @@ namespace laba5.GA
             {
                 chromosome = new bool[v];
                 chromosome[i] = true;
+                //for (int j = 0; j < Creature.adjList[i].Count; j++)
+                //    chromosome[Creature.adjList[i][j]] = true;
                 Creature creature = new Creature(chromosome);
                 creature.ExtractCliqueAndSetF();
                 _currPopulation.Add(creature.F, creature);
@@ -140,7 +143,7 @@ namespace laba5.GA
             switch (crossMethod)
             {
                 case CrossoverMethod.TwoPoints:
-                    C_kPoints(parent1, parent2, out child1, out child2, 1);/////!!!!!!!!!!!!!
+                    C_kPoints(parent1, parent2, out child1, out child2, 2);
                     break;
                 case CrossoverMethod.FivePoints:
                     C_kPoints(parent1, parent2, out child1, out child2, 5);
@@ -260,6 +263,8 @@ namespace laba5.GA
                     LI_Straight(child); break;
                 case LocalImprMethod.AddVerticesToCliqueRandom:
                     LI_Random(child); break;
+                case LocalImprMethod.AddVerticesFromAdjList:
+                    LI_Adj(child); break;
                 default: break;
             }
         }
@@ -273,6 +278,10 @@ namespace laba5.GA
             int number = rnd.Next(0, v);            
             child.ImproveClique(number, v);
             child.ImproveClique(0, number + 1);
+        }
+        private void LI_Adj(Creature child)
+        {
+            child.AddVerticesFromAdjList();
         }
         private void AddChildToPopulation(Creature child)   //add child and remove the worst
         {            
