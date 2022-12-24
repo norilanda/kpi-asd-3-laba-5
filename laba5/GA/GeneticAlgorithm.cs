@@ -25,20 +25,27 @@ namespace laba5.GA
             AddVerticesToCliqueStraight,
             AddVerticesToCliqueRandom
         }
+        public enum TerminationCondition
+        {
+            Iterations,
+            Stagnancy
+        }
         int v;
         private SortedList<int, Creature> _currPopulation;
         private Creature bestCreature;
         private CrossoverMethod crossMethod;
         private MutationMethod mutMethod;
         private LocalImprMethod imprMethod;
+        private TerminationCondition terminationCondition;
         private int iterations;
         private int currPointNumber;//for dynamic crossover
 
         private double mutationPossibility;
+        private int terminationNumber;
 
         public Creature BestCreature => bestCreature;
 
-        public GeneticAlgorithm(Graph graph, int crossMethod, int mutMethod, double mutationPossibl, int imprMethod)
+        public GeneticAlgorithm(Graph graph, int crossMethod, int mutMethod, double mutationPossibl, int imprMethod, int termCondition, int terminationNumber)
         {
             Creature.adjList = graph.adjList;
             v = graph.adjList.Length;
@@ -47,6 +54,7 @@ namespace laba5.GA
             this.crossMethod = (CrossoverMethod)crossMethod;
             this.mutMethod = (MutationMethod)mutMethod;
             this.imprMethod = (LocalImprMethod)imprMethod;
+            this.terminationCondition = (TerminationCondition)termCondition;
             iterations = 0;
             if (v > 50)
                 currPointNumber = 10;
@@ -54,7 +62,8 @@ namespace laba5.GA
                 currPointNumber = 5;
             else
                 currPointNumber = 3;
-            mutationPossibility = mutationPossibl;
+            mutationPossibility = mutationPossibl; 
+            this.terminationNumber = terminationNumber;
         }
         private void CreateInitialPopulation()
         {
@@ -71,9 +80,14 @@ namespace laba5.GA
         }
         public void Start()
         {
-            int tempItNumber = 100;
-            for (int i=0;i<tempItNumber;i++)
+            //int tempItNumber = 100;
+            int lastBestF;            
+
+            int currIterationNumberOrStagnancy = 0;//iteration number or stagnancy
+            while (currIterationNumberOrStagnancy < terminationNumber)
             {
+                lastBestF = bestCreature.F;//for stagnancy condition
+
                 Creature parent1, parent2;
                 Creature child1, child2;
                 Selection(out parent1, out parent2);
@@ -82,11 +96,19 @@ namespace laba5.GA
                 Mutation(ref child2);
                 child1.ExtractCliqueAndSetF();
                 child2.ExtractCliqueAndSetF() ;
-                //LocalImprovement(child1);
-                //LocalImprovement(child2);
+                LocalImprovement(child1);
+                LocalImprovement(child2);
                 AddChildToPopulation(child1);
                 AddChildToPopulation(child2);
-                                
+
+                if (terminationCondition == TerminationCondition.Stagnancy)
+                {
+                    if (lastBestF != bestCreature.F)
+                        currIterationNumberOrStagnancy = -1;
+                }
+                else
+                    currIterationNumberOrStagnancy++;
+
                 iterations++;
             }
         }
