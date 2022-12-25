@@ -65,13 +65,20 @@ namespace laba5.GraphModel
             int index;
             for (int i = 0; i < v; i++)
             {
-                for (int j = 0; j < initial[i].edgeNumber; j++)
+                List<int> possibleVertices = new List<int>(); 
+                for (int j=0;j<v; j++)
                 {
-                    index = rnd.Next(0, v - 1);
-                    if (initial[index].edgeNumber > 0 && index != i && !IsAlreadyInList(adjList, i, index))
+                    if (!adjList[i].Contains(j) && j !=i)
+                        possibleVertices.Add(j);
+                }
+                while ( initial[i].edgeNumber != 0 && possibleVertices.Count > 0)
+                {
+                    index = possibleVertices[rnd.Next(0, possibleVertices.Count)];
+                    if ((initial[index].edgeNumber >0 ) && !IsAlreadyInList(adjList, i, index))
                     {
-                        AddEdge(adjList, i, index, initial[i], initial[index]);
+                        AddEdge(adjList, i, index, initial[i], initial[index]);                        
                     }
+                    possibleVertices.Remove(index);
                 }
             }
             for (int i = 0; i < v; i++)
