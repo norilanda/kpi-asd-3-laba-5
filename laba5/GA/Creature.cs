@@ -11,46 +11,63 @@ namespace laba5.GA
     {
         public static List<int>[] adjList;
         private bool[] _chromosome;
-        private int _F;
+        private int _cliqeSize;
         private Dictionary<int, List<int>> maxClique;
-        public int F
+        private int _F;//dynamicDegree
+        public int CliqueSize
         { 
-            get { return _F; }
-            set { _F = value; }
+            get { return _cliqeSize; }
+            set { _cliqeSize = value; }
         }
+        public int F => _F;
         public bool[] Chromosome => _chromosome;
         public Creature(bool[] chromosome) 
         {
             _chromosome = new bool[chromosome.Length];
             Array.Copy(chromosome, _chromosome,chromosome.Length);
+            CalcF();
         }
         public void ExtractCliqueAndSetF()
         {
             ExtractMaxClique();
-            _F = maxClique.Count;
+            _cliqeSize = maxClique.Count;
+        }
+        private void CalcF()
+        {
+            _F = 0;
+            Dictionary<int, List<int>> tempDictio = FromChromosomeToVertices();
+            foreach (int key in tempDictio.Keys)
+            {
+                _F += tempDictio[key].Count;
+            }
+        }
+        private Dictionary<int, List<int>> FromChromosomeToVertices()
+        {
+            Dictionary<int, List<int>> vertices = new Dictionary<int, List<int>>();
+            // add vertices from chromosome to dictionary
+            for (int i = 0; i < _chromosome.Length; i++)
+            {
+                if (_chromosome[i])
+                    vertices[i] = new List<int>();
+            }
+            //connect vertices
+            foreach (int i in vertices.Keys)
+            {
+                for (int j = 0; j < adjList[i].Count; j++)
+                {
+                    int index = adjList[i][j];
+                    if (vertices.ContainsKey(index) && !vertices[i].Contains(index) && i != index)
+                    {
+                        vertices[index].Add(i);
+                        vertices[i].Add(index);
+                    }
+                }
+            }
+            return vertices;
         }
         private void ExtractMaxClique()
         {
-            maxClique = new Dictionary<int, List<int>>();
-            // add vertices from chromosome to dictionary
-            for (int i=0;i< _chromosome.Length;i++)
-            {
-                if (_chromosome[i])
-                    maxClique[i] = new List<int>();
-            }
-            //connect vertices
-            foreach (int i in maxClique.Keys)
-            {
-                for (int j=0; j < adjList[i].Count; j++)
-                {
-                    int index = adjList[i][j];
-                    if (maxClique.ContainsKey(index) && !maxClique[i].Contains(index) && i != index)
-                    {
-                        maxClique[index].Add(i);
-                        maxClique[i].Add(index);
-                    }     
-                }
-            }
+            maxClique = FromChromosomeToVertices();
             Random rnd= new Random();
             while (!IsClique())
             {
@@ -108,9 +125,7 @@ namespace laba5.GA
                         }
                     }
                     if (sholdAdd)
-                    {
                         AddVertex(i);
-                    }
                 }
             }
         }
@@ -121,7 +136,8 @@ namespace laba5.GA
             List<int> adjListForI = new List<int>(maxClique.Keys);
             maxClique[i] = adjListForI;
             _chromosome[i] = true;
-            _F++;
+            _cliqeSize++;
+            _F += maxClique.Count*2;
         }
         public void AddVerticesFromAdjList()
         {
@@ -146,9 +162,7 @@ namespace laba5.GA
                     if (commonVerticesList.Count == 0) break;
                 }
                 if (commonVerticesList.Count > 0)
-                {
                     AddVertex(commonVerticesList[0]);
-                }
             }
             else
                 ImproveClique();

@@ -123,7 +123,7 @@ namespace laba5.GA
                         currIterationNumberOrStagnancy = terminationNumber;
                 }
 
-                if (bestCreature.F >= k)
+                if (bestCreature.CliqueSize >= k)
                     hasAClique = true;
 
                 iterations++;
@@ -199,7 +199,7 @@ namespace laba5.GA
         private void C_Dynamic(Creature parent1, Creature parent2, out Creature child1, out Creature child2)
         {
             C_kPoints(parent1, parent2, out child1, out child2, currPointNumber);
-            if (currPointNumber>2 && iterations%3 == 0)
+            if (currPointNumber>2 && iterations%20 == 0)
                 currPointNumber--;
         }
         private static List<int> GenerateDifferentNumbers(int start,int end, int number)

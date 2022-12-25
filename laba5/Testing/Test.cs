@@ -26,11 +26,12 @@ namespace laba5.Testing
             int mutMethod = 1; //0-ChangeToOpposite, 1-Exchange
             int imprMethod = 1; //0-AddVerticesToCliqueStraight, 1-AddVerticesToCliqueRandom, 2-AddVerticesFromAdjList
             int terminationCondition = 1; //0-number of iterations, 1-stagnancy, 2-fullGraph
-            int terminationNumber = 1000;
+            int terminationNumber = 300;
             double mutationPossibility = 0.1;
-            int k = 4;
+            int k = 5;
             for (int i = 0; i < GNumber; i++)
             {
+                Console.WriteLine("Number " + (int)(i + 1));
                 string path = "graph" + i + ".txt";
                 Graph graph = new Graph(path);
                 if (graph.V < 30)
@@ -49,6 +50,7 @@ namespace laba5.Testing
                 bestCreature.DisplayMaxClique();
 
                 Console.WriteLine("Number of iterations that has been made: " + ga.Iterations);
+                Console.WriteLine();
             }
         }
     }
